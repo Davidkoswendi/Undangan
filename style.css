@@ -381,3 +381,38 @@ body.go .nm .amp{animation:letter .9s calc(var(--i)*.08s + 1.1s) both cubic-bezi
 .prog .ayat small{text-align:center;padding-left:.18em}
 .prog{padding-left:32px;padding-right:32px}
 @media(max-width:480px){.prog{padding-left:20px;padding-right:20px}}
+/* ===== Placeholder foto: blur + shimmer saat loading, lalu fade-in jernih ===== */
+.ph:not(.has)::after{content:"";display:block;position:absolute;inset:-20%;font:0;background:radial-gradient(circle at 30% 35%,#ffffff80,transparent 45%),radial-gradient(circle at 72% 70%,#4f8cff59,transparent 50%);filter:blur(22px);opacity:.9}
+.ph:not(.has){background:linear-gradient(110deg,#9db9e6 8%,#c9dbf5 32%,#9db9e6 56%);background-size:240% 100%;animation:phload 1.4s linear infinite}
+.ph.miss:not(.has){animation:none;background:linear-gradient(160deg,#9db9e6,#7aa6e0)}
+.ph.miss:not(.has)::after{display:none}
+@keyframes phload{to{background-position:-140% 0}}
+.ph{isolation:isolate}
+.ph:not(.has)::after{z-index:-1}
+/* layer foto: crossfade halus dari placeholder (blur -> jernih, zoom pelan) */
+.ph .pi{position:absolute;inset:0;z-index:0;display:block;background-size:cover;background-position:inherit;background-repeat:no-repeat;
+ opacity:0;filter:blur(16px);transform:scale(1.07);will-change:opacity,filter,transform;
+ transition:opacity 1.1s cubic-bezier(.4,0,.2,1),filter 1.4s cubic-bezier(.3,.6,.2,1),transform 1.8s cubic-bezier(.2,.7,.2,1)}
+.ph .pi.on{opacity:1;filter:blur(0);transform:none}
+@media(prefers-reduced-motion:reduce){.ph:not(.has){animation:none!important}.ph .pi{transition:none!important;opacity:1;filter:none;transform:none}}
+
+/* ===== Hero: foto jadi latar penuh ===== */
+#hero{max-width:none;padding:0;min-height:100vh;min-height:100svh;display:flex;flex-direction:column;align-items:center;justify-content:center;isolation:isolate}
+#hero::before{display:none}
+#hero .herobg{position:absolute;inset:0;z-index:-1;width:auto;height:auto;aspect-ratio:auto;border-radius:0;background-position:center 30%}
+#hero .herobg::before{content:"";position:absolute;inset:0;z-index:1;
+ background:linear-gradient(180deg,#0a1f5cb8 0%,#0a1f5c52 26%,#0a1f5c5c 52%,#071540d9 82%,#06123af2 100%),radial-gradient(ellipse at 50% 45%,transparent 40%,#06123a66 100%)}
+#hero .hin{position:relative;width:100%;max-width:560px;margin:0 auto;padding:92px 24px 120px;text-align:center}
+#hero .hin p{color:#eef4ff!important;text-shadow:0 2px 12px #06123a99}
+#hero h1{color:#fff;text-shadow:0 4px 28px #06123acc,0 1px 3px #06123a66}
+#hero .cap{color:#dbe8ff!important;font-size:21px;margin-top:6px}
+#hero .date{color:#fff;margin-top:34px}
+#hero .date span{border-color:#ffffffcc;text-shadow:0 2px 10px #06123a99}
+#hero .date b{color:#fff;background:#ffffff1f;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);
+ box-shadow:0 0 0 1.5px #fff,0 0 0 7px #ffffff1f,0 0 0 8.5px #ffffff66;text-shadow:0 2px 12px #06123a99}
+#hero .verse{font-size:20px;line-height:1.55;max-width:34ch;margin-top:8px}
+#hero .count{margin-top:34px}
+#hero .count div{background:#ffffff1f;border:1px solid #ffffff3d;-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+#hero .count b{color:#fff}
+#hero .count small{color:#dbe8ff}
+@media(max-width:480px){#hero .hin{padding:80px 20px 110px}#hero .verse{font-size:18.5px}}

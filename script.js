@@ -72,7 +72,11 @@ $('#heroCap').textContent=C.heroCap;
 /* guest name from #Nama-Tamu */
 try{const h=decodeURIComponent(location.hash.slice(1)).replace(/-/g,' ').trim();if(h)$('#guest').textContent=h;$('#fn').value=h}catch(e){}
 /* photos */
-const setBg=(e,s)=>{if(!s)return;const i=new Image();i.onload=()=>{e.style.backgroundImage=`url("${s}")`;e.classList.add('has')};i.src=s};
+const setBg=(e,s)=>{if(!s){e.classList.add('miss');return}const i=new Image();i.decoding='async';i.onerror=()=>e.classList.add('miss');
+ /* foto ditaruh di layer sendiri lalu di-crossfade di atas placeholder (tanpa lompatan) */
+ i.onload=()=>{const show=()=>{const l=document.createElement('i');l.className='pi';l.style.backgroundImage=`url("${s}")`;e.appendChild(l);
+  requestAnimationFrame(()=>requestAnimationFrame(()=>l.classList.add('on')));setTimeout(()=>e.classList.add('has'),RM?0:1500)};
+  (i.decode?i.decode():Promise.resolve()).then(show,show)};i.src=s};
 $$('.ph[data-k]').forEach(e=>setBg(e,C.photos[e.dataset.k]));
 $$('.ph[data-g]').forEach(e=>setBg(e,gs[e.dataset.g].src));
 /* torn paper edges */

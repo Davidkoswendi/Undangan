@@ -6,6 +6,8 @@
 <title>Undangan Pernikahan Ica & Syamsul</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Pinyon+Script&family=Jost:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="preload" as="image" href="foto/galeri-3.jpg" fetchpriority="high">
+<link rel="preload" as="image" href="foto/hero.jpg">
 <link rel="stylesheet" href="style.css">
 </head>
 <body class="lock">
@@ -36,14 +38,16 @@
 <button id="mus" aria-label="Putar musik">♪</button>
 
 <main>
-<section id="hero">
-  <p class="sans rv" style="font-size:13px;letter-spacing:.3em;color:var(--blue)">THE WEDDING OF</p>
+<section id="hero" class="tear" data-t="b">
+<div class="ph herobg" data-k="hero" data-par></div>
+<div class="hin">
+  <p class="sans rv" style="font-size:13px;letter-spacing:.3em">THE WEDDING OF</p>
   <h1 class="script nm" id="names2" style="font-size:clamp(52px,15vw,78px);--d:.1s"></h1>
-  <div class="ph tear rv" data-k="hero" data-t="b" style="--d:.2s;margin-top:14px"></div>
   <p class="cap rv" id="heroCap"></p>
   <div class="date rv"><span id="wd"></span><b id="dd"></b><span id="mo"></span></div>
   <p class="verse rv" id="verse"></p>
   <div class="count rv" id="count"></div>
+</div>
 </section>
 <div class="mq" aria-hidden="true"><div id="mq"></div></div>
 
