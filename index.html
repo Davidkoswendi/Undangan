@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Undangan Pernikahan Ica & Syamsul</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Pinyon+Script&family=Jost:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body class="lock">
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+<symbol id="d" viewBox="0 0 100 170"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+<g id="p"><ellipse cx="50" cy="20" rx="7" ry="17"/><ellipse cx="50" cy="20" rx="7" ry="17" transform="rotate(45 50 42)"/><ellipse cx="50" cy="20" rx="7" ry="17" transform="rotate(90 50 42)"/><ellipse cx="50" cy="20" rx="7" ry="17" transform="rotate(135 50 42)"/><ellipse cx="50" cy="20" rx="7" ry="17" transform="rotate(180 50 42)"/><ellipse cx="50" cy="20" rx="7" ry="17" transform="rotate(225 50 42)"/><ellipse cx="50" cy="20" rx="7" ry="17" transform="rotate(270 50 42)"/><ellipse cx="50" cy="20" rx="7" ry="17" transform="rotate(315 50 42)"/></g>
+<circle cx="50" cy="42" r="7"/><path d="M50 66C46 100 58 130 50 168"/><path d="M52 120C70 112 80 100 82 88C66 92 56 104 52 120Z"/><path d="M49 140C34 134 24 124 22 112C38 116 46 126 49 140Z"/></g></symbol>
+</svg>
+
+<div id="cover">
+  <div class="seam"></div><div class="pn l"></div><div class="pn r"></div>
+  <div class="cin">
+    <div class="hrts" id="chr"></div>
+    <svg class="daisy sway cd1" aria-hidden="true"><use href="#d"/></svg>
+    <svg class="daisy sway cd2" aria-hidden="true"><use href="#d"/></svg>
+    <div class="arch"><div class="ph" data-k="cover"></div></div>
+    <div class="script mono" id="mono1"></div>
+    <div class="sans kicker">THE WEDDING OF</div>
+    <div class="script names" id="names1"></div>
+    <div class="sans cdate" id="cdate"></div>
+    <div class="to sans">Kepada Yth.<b id="guest">Tamu Undangan</b></div>
+    <div class="hold" id="hold"><div id="hi"><div class="tp" aria-hidden="true"><i></i><i></i><b>♥</b></div><p class="hint" id="hint">Satukan dua jari untuk membuka kisah kami.</p><p class="sans sub" id="sub"></p></div><button class="btn skip" id="skip" type="button">♥ Buka Undangan</button></div>
+  </div>
+</div>
+
+<canvas id="fx" aria-hidden="true"></canvas>
+
+<button id="mus" aria-label="Putar musik">♪</button>
+
+<main>
+<section id="hero">
+  <p class="sans rv" style="font-size:13px;letter-spacing:.3em;color:var(--blue)">THE WEDDING OF</p>
+  <h1 class="script nm" id="names2" style="font-size:clamp(52px,15vw,78px);--d:.1s"></h1>
+  <div class="ph tear rv" data-k="hero" data-t="b" style="--d:.2s;margin-top:14px"></div>
+  <p class="cap rv" id="heroCap"></p>
+  <div class="date rv"><span id="wd"></span><b id="dd"></b><span id="mo"></span></div>
+  <p class="verse rv" id="verse"></p>
+  <div class="count rv" id="count"></div>
+</section>
+<div class="mq" aria-hidden="true"><div id="mq"></div></div>
+
+<section>
+  <div class="hd rv"><i></i><b>♥</b><i></i></div>
+  <h2 class="script rv">Ayat Pernikahan</h2>
+  <div class="prog rv">
+    <div class="script mono" id="mono2"></div>
+    <ul id="prog" class="ayat"></ul>
+  </div>
+</section>
+
+<section class="band tear" data-t="tb"><div class="ph" data-k="story" data-par></div><h2 class="script rv">Mempelai</h2></section>
+
+<section style="padding-top:50px">
+  <svg class="daisy sway" style="right:0;bottom:10px;width:90px"><use href="#d"/></svg>
+  <p class="rv" id="story"></p><div class="couple rv" id="tl"></div>
+</section>
+
+<section class="band tear" data-t="tb"><div class="ph" data-k="details" data-par></div><h2 class="script rv">Acara</h2></section>
+
+<section id="acara">
+  <div class="pair">
+    <div class="card rv"><div class="ph venue tear" data-k="ceremony"></div><h3>Akad Nikah</h3><div class="sans" id="cDate"></div><p id="cPlace"></p><a class="btn ghost" id="cMap" target="_blank" rel="noopener">Lihat Peta</a><a class="btn" id="cal" target="_blank" rel="noopener">Simpan ke Kalender</a></div>
+  </div>
+</section>
+
+<section>
+  <svg class="daisy sway" style="left:-10px;top:60px"><use href="#d"/></svg>
+  <div class="hd rv"><i></i><b>♥</b><i></i></div>
+  <h2 class="script rv">Dress Code</h2>
+  <p class="sans rv" style="font-size:17px;line-height:1.7">Busana bebas dan sopan,<br>diusahakan mengenakan batik.</p>
+  <div class="attire rv">
+    <figure><svg viewBox="0 0 120 222" aria-hidden="true"><path fill="var(--blue)" d="M44 14h6l3 28q7 8 14 0l3-28h6l-3 38q-2 14-6 28L98 206Q60 220 22 206L53 80q-4-14-6-28Z"/><path d="M53 80h14" stroke="var(--paper)" stroke-width="3"/><path d="M60 84v128M58 84L40 208M62 84l18 124M56 84L28 206M64 84l28 122" stroke="var(--paper)" stroke-opacity=".35" fill="none"/></svg><figcaption>Gaun panjang</figcaption></figure>
+    <figure><svg viewBox="0 0 120 222" aria-hidden="true"><path fill="var(--blue)" d="M16 36L36 26 60 44 84 26 104 36 108 132 86 134 84 98H36L34 134 12 132ZM36 98H84L86 212H64L60 128 56 212H34Z"/><path fill="var(--paper)" d="M46 32L60 96 74 32 60 44Z"/><path fill="var(--blue)" d="M57 46h6l2 8-4 34h-2l-4-34z"/><path d="M46 32L38 70 52 82M74 32l8 38-14 12" stroke="var(--paper)" stroke-opacity=".6" fill="none"/><path fill="var(--blue)" d="M32 212h24v7H28zM64 212h24l4 7H64z"/></svg><figcaption>Jas & dasi</figcaption></figure>
+  </div>
+</section>
+
+<section id="galeri" class="band tear" data-t="tb"><div class="ph" data-k="gallery" data-par></div><h2 class="script rv">Momen Kami</h2></section>
+<section class="tripsec"><p class="sans kick rv">PERJALANAN KAMI</p><p class="rv">Satu per satu, inilah potongan kisah yang kami simpan.</p><div class="trip" id="grid"></div></section>
+
+<section id="rsvp" class="band tear" data-t="tb"><div class="ph" data-k="rsvp" data-par></div><h2 class="script rv">Tinggalkan Pesan</h2></section>
+<section style="padding-top:50px">
+  <p class="rv">Tuliskan doa dan ucapan terbaik Anda untuk kami. Setiap pesan akan kami simpan sebagai kenangan.</p>
+  <form id="f" class="rv">
+    <label class="field">Nama<input id="fn" required maxlength="40" autocomplete="name"></label>
+    <label class="field">Pesan & doa<textarea id="fm" required maxlength="300"></textarea></label>
+    <div class="stkpick"><span class="sans">Pilih stiker (boleh dilewati)</span><div id="stk"></div></div>
+    <button class="btn" type="submit">Kirim Pesan ♥</button>
+  </form>
+  <div class="wcount sans" id="wc"></div><div id="wishes"></div>
+</section>
+
+</main>
+
+<footer>
+  <svg width="50" height="85" style="color:#fff;opacity:.85"><use href="#d"/></svg>
+  <p style="color:inherit">Merupakan kehormatan dan kebahagiaan bagi kami apabila Anda berkenan hadir dan memberikan doa restu.</p>
+  <div class="bigheart">♥</div><div class="script" id="names3"></div>
+  <p class="sans" style="font-size:13px;opacity:.95;color:inherit" id="fDate"></p>
+</footer>
+<div id="bar"></div>
+<nav id="dock" aria-label="Navigasi"><a href="#hero" class="on">Beranda</a><a href="#acara">Acara</a><a href="#galeri">Galeri</a><a href="#rsvp">Pesan</a></nav>
+<div id="lb"><div></div></div>
+
+<script src="script.js"></script>
+</body>
+</html>

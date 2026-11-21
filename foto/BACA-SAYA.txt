@@ -1,0 +1,13 @@
+Taruh foto prewedding di folder ini dengan nama persis seperti berikut:
+
+cover.jpg          foto di halaman pembuka (portrait, rasio 3:4)
+hero.jpg           foto utama setelah undangan dibuka (portrait, rasio 4:5)
+kisah.jpg          foto lebar bagian Kisah Kami (landscape)
+detail.jpg         foto lebar bagian Detail Acara (landscape)
+akad.jpg           foto lokasi akad (landscape, rasio 16:10)
+galeri-banner.jpg  foto lebar judul Galeri (landscape)
+pesan.jpg          foto lebar bagian Tinggalkan Pesan (landscape)
+galeri-1.jpg sampai galeri-6.jpg   foto galeri (portrait, rasio 3:4)
+
+Caption foto galeri diubah di script.js pada bagian "g:[...]".
+Disarankan ukuran tiap foto di bawah 500 KB agar cepat dibuka.
