@@ -1,2 +1,0 @@
-Taruh lagu di folder ini dengan nama lagu.mp3 (disarankan di bawah 4 MB).
-Nama file bisa diganti di script.js pada baris music:'...'.

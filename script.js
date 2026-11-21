@@ -17,7 +17,7 @@ const C={
      Kalau file belum ada, otomatis tampil kotak biru (tidak error). */
   heroCap:'Ica & Syamsul, bersama selamanya',
   photos:{
-    cover:'foto/cover.jpg', hero:'foto/hero.jpg', story:'foto/kisah.jpg', details:'foto/detail.jpg',
+    cover:'foto/galeri-3.jpg', hero:'foto/hero.jpg', story:'foto/kisah.jpg', details:'foto/detail.jpg',
     ceremony:'foto/akad.jpg', gallery:'foto/galeri-banner.jpg', rsvp:'foto/pesan.jpg',
     /* Galeri: src = nama file, cap = caption yang tampil di bawah foto & saat diperbesar */
     g:[
@@ -90,35 +90,43 @@ const petalsOn=()=>{for(let i=0;i<12;i++){const p=document.createElement('i');p.
 (()=>{
 const cover=$('#cover'),cv=$('#fx'),g=cv.getContext('2d'),hi=$('#hi'),sub=$('#sub'),skip=$('#skip');
 const fine=matchMedia('(hover:hover) and (pointer:fine)').matches;
-const HOLD=1.5,TRACE=.95,FILL=.82,TAU=Math.PI*2;
+const HOLD=3.2,TRACE=1.9,FILL=1.5,TAU=Math.PI*2;
 const rnd=(a,b)=>a+Math.random()*(b-a),clamp=(v,a=0,b=1)=>Math.min(b,Math.max(a,v)),lerp=(a,b,k)=>a+(b-a)*k;
 const E={io:k=>k<.5?4*k*k*k:1-Math.pow(-2*k+2,3)/2,out:k=>1-Math.pow(1-k,3),back:k=>{const c=1.70158;return 1+(c+1)*Math.pow(k-1,3)+c*Math.pow(k-1,2)}};
 const vib=v=>{try{navigator.vibrate&&navigator.vibrate(v)}catch(_){}};
 
-/* ---- SOUND EFFECT (disintesis WebAudio, tidak butuh file) ---- */
+/* ---- SOUND (WebAudio): pad hangat + lonceng lembut + reverb, tanpa file ---- */
 const AC=window.AudioContext||window.webkitAudioContext;
-let ac=null,mix=null,nbuf=null,ch=null;
-const sfxInit=()=>{if(!AC)return;try{if(!ac){ac=new AC();const cp=ac.createDynamicsCompressor();mix=ac.createGain();mix.gain.value=.8;mix.connect(cp);cp.connect(ac.destination);
- nbuf=ac.createBuffer(1,ac.sampleRate*2,ac.sampleRate);const d=nbuf.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1}
+let ac=null,mix=null,wet=null,ch=null;
+const mkVerb=()=>{const n=Math.floor(ac.sampleRate*3.2),b=ac.createBuffer(2,n,ac.sampleRate);
+ for(let c=0;c<2;c++){const d=b.getChannelData(c);for(let i=0;i<n;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/n,2.6)}
+ const cv=ac.createConvolver();cv.buffer=b;return cv};
+const sfxInit=()=>{if(!AC)return;try{if(!ac){ac=new AC();const cp=ac.createDynamicsCompressor();cp.threshold.value=-18;cp.ratio.value=3;
+ mix=ac.createGain();mix.gain.value=.75;const dry=ac.createGain();dry.gain.value=.8;wet=ac.createGain();wet.gain.value=.55;
+ const vb=mkVerb(),lp=ac.createBiquadFilter();lp.type='lowpass';lp.frequency.value=5200;
+ mix.connect(dry);mix.connect(vb);vb.connect(wet);dry.connect(lp);wet.connect(lp);lp.connect(cp);cp.connect(ac.destination)}
  if(ac.state==='suspended')ac.resume()}catch(_){ac=null}};
-const tone=(f,t,d,ty='sine',v=.2,f2,at=.012)=>{if(!ac)return;const o=ac.createOscillator(),gn=ac.createGain(),t0=ac.currentTime+t;o.type=ty;o.frequency.setValueAtTime(f,t0);if(f2)o.frequency.exponentialRampToValueAtTime(f2,t0+d);
- gn.gain.setValueAtTime(.0001,t0);gn.gain.exponentialRampToValueAtTime(v,t0+Math.min(at,d*.9));gn.gain.exponentialRampToValueAtTime(.0001,t0+d);o.connect(gn);gn.connect(mix);o.start(t0);o.stop(t0+d+.05)};
-const hiss=(t,d,v,ty,f1,f2,at)=>{if(!ac)return;const sr=ac.createBufferSource(),fl=ac.createBiquadFilter(),gn=ac.createGain(),t0=ac.currentTime+t;at=Math.min(at||.04,d*.9);
- sr.buffer=nbuf;sr.loop=true;fl.type=ty;fl.Q.value=1.2;fl.frequency.setValueAtTime(f1,t0);fl.frequency.exponentialRampToValueAtTime(f2,t0+d);
- gn.gain.setValueAtTime(.0001,t0);gn.gain.exponentialRampToValueAtTime(v,t0+at);gn.gain.exponentialRampToValueAtTime(.0001,t0+d);sr.connect(fl);fl.connect(gn);gn.connect(mix);sr.start(t0);sr.stop(t0+d+.05)};
-/* suara \"mengisi\" selama ditahan: nada naik + desir angin yang ikut berputar */
-const chargeOn=()=>{if(!ac||ch)return;const o1=ac.createOscillator(),o2=ac.createOscillator(),ns=ac.createBufferSource(),nf=ac.createBiquadFilter(),ng=ac.createGain(),og=ac.createGain(),lp=ac.createBiquadFilter();
- o1.type='sine';o2.type='triangle';ns.buffer=nbuf;ns.loop=true;nf.type='bandpass';nf.Q.value=2;lp.type='lowpass';lp.frequency.value=2400;og.gain.value=0;ng.gain.value=0;
- o1.connect(og);o2.connect(og);og.connect(lp);lp.connect(mix);ns.connect(nf);nf.connect(ng);ng.connect(mix);o1.start();o2.start();ns.start();ch={o1,o2,ns,nf,og,ng}};
-const chargeSet=k=>{if(!ch)return;const t0=ac.currentTime,f=150+640*k;ch.o1.frequency.setTargetAtTime(f,t0,.06);ch.o2.frequency.setTargetAtTime(f*1.5,t0,.06);ch.og.gain.setTargetAtTime(.12*k,t0,.08);ch.nf.frequency.setTargetAtTime(350+2800*k,t0,.06);ch.ng.gain.setTargetAtTime(.16*k*k,t0,.08)};
-const chargeOff=()=>{if(!ch)return;const c=ch;ch=null;const t0=ac.currentTime;c.og.gain.setTargetAtTime(0,t0,.05);c.ng.gain.setTargetAtTime(0,t0,.05);setTimeout(()=>{try{c.o1.stop();c.o2.stop();c.ns.stop()}catch(_){}},400)};
+const bell=(f,t,d,v)=>{if(!ac)return;const t0=ac.currentTime+t;
+ [[1,1],[2,.28],[3,.08],[2.76,.05]].forEach(([m,a],i)=>{const o=ac.createOscillator(),gn=ac.createGain();o.type='sine';o.frequency.value=f*m;
+  const dd=d/(1+i*.6);gn.gain.setValueAtTime(.0001,t0);gn.gain.linearRampToValueAtTime(v*a,t0+.03);gn.gain.exponentialRampToValueAtTime(.0001,t0+dd);
+  o.connect(gn);gn.connect(mix);o.start(t0);o.stop(t0+dd+.1)})};
+const pad=(fs,t,d,v,at)=>{if(!ac)return;const t0=ac.currentTime+t;at=at||d*.4;
+ fs.forEach((f,i)=>{[-4,4].forEach(dt=>{const o=ac.createOscillator(),gn=ac.createGain();o.type=i?'sine':'triangle';o.frequency.value=f;o.detune.value=dt;
+  gn.gain.setValueAtTime(.0001,t0);gn.gain.linearRampToValueAtTime(v/fs.length,t0+at);gn.gain.linearRampToValueAtTime(.0001,t0+d);
+  o.connect(gn);gn.connect(mix);o.start(t0);o.stop(t0+d+.1)})})};
+const chargeOn=()=>{if(!ac||ch)return;const lp=ac.createBiquadFilter(),og=ac.createGain(),os=[];
+ lp.type='lowpass';lp.frequency.value=500;og.gain.value=0;
+ [[196,'triangle',-5],[196,'sine',5],[293.66,'sine',0],[392,'sine',-3]].forEach(([f,ty,dt])=>{const o=ac.createOscillator();o.type=ty;o.frequency.value=f;o.detune.value=dt;o.connect(lp);o.start();os.push(o)});
+ lp.connect(og);og.connect(mix);ch={os,og,lp}};
+const chargeSet=k=>{if(!ch)return;const t0=ac.currentTime;ch.og.gain.setTargetAtTime(.1*Math.min(1,k*1.6),t0,.35);ch.lp.frequency.setTargetAtTime(500+2200*k,t0,.35)};
+const chargeOff=()=>{if(!ch)return;const c=ch;ch=null;c.og.gain.setTargetAtTime(0,ac.currentTime,.4);setTimeout(()=>{try{c.os.forEach(o=>o.stop())}catch(_){}},2200)};
 const sfx={
- tick:()=>tone(1400,0,.12,'sine',.08),
- meet:()=>{tone(260,0,.45,'sine',.5,70);tone(988,0,.9,'triangle',.14);tone(1480,.03,1.1,'sine',.1);hiss(0,.5,.2,'bandpass',4000,800)},
- sparkle:()=>[659,784,988,1175,1319,1568].forEach((f,i)=>tone(f,i*.17,.55,'sine',.11)),
- riser:()=>{hiss(0,FILL,.28,'bandpass',300,7000,FILL*.85);tone(200,0,FILL,'triangle',.12,1400,FILL*.85)},
- boom:()=>{tone(130,0,1.1,'sine',.9,32);tone(65,0,1.3,'triangle',.5,28);hiss(0,1.4,.5,'lowpass',5000,180);hiss(0,.5,.22,'highpass',2500,6000);[1047,1319,1568,2093,2637].forEach((f,i)=>tone(f,.08+i*.06,1.2,'sine',.1))},
- chime:()=>{tone(784,0,.5,'sine',.15);tone(1175,.1,.7,'sine',.12);tone(1568,.2,.9,'sine',.1)}
+ tick:()=>bell(1568,0,1.4,.035),
+ meet:()=>{pad([196,293.66,392],0,3.2,.16,.7);bell(523.25,0,3,.12);bell(783.99,.12,3.2,.09)},
+ sparkle:()=>[659.25,783.99,987.77,1318.5].forEach((f,i)=>bell(f,.25+i*.34,2.8,.065)),
+ riser:()=>{pad([261.63,329.63,392,523.25],0,FILL+1.2,.14,FILL*.9)},
+ boom:()=>{pad([130.81,196,261.63,329.63,392],0,4.5,.22,.5);[523.25,659.25,783.99,1046.5,1318.5].forEach((f,i)=>bell(f,.05+i*.16,3.8,.1))},
+ chime:()=>{bell(659.25,0,2.4,.1);bell(987.77,.18,2.8,.08);bell(1318.5,.38,3,.06)}
 };
 const idle=f=>window.requestIdleCallback?requestIdleCallback(f,{timeout:700}):setTimeout(f,80);
 let opened=false,ph='idle';
@@ -133,7 +141,7 @@ const openInvite=()=>{if(opened)return;opened=true;if(ph==='idle')ph='done';
  cover.querySelectorAll('.pn .cin').forEach(n=>n.style.visibility='');
  cin.style.display='none';cover.classList.add('open');
  document.body.classList.remove('lock');document.body.classList.add('go');window.scrollTo(0,0);
- setTimeout(petalsOn,1700);setTimeout(startRv,900);setTimeout(()=>cover.style.display='none',2400);
+ setTimeout(petalsOn,2600);setTimeout(startRv,1500);setTimeout(()=>cover.style.display='none',3800);
  $('#mus').style.display='block';
  if(C.music){a.play().then(()=>mus(true)).catch(()=>mus(false))}else mus(false);
  const T3=['pointerup','keyup','click'],again=e=>{T3.forEach(t=>removeEventListener(t,again,true));if(e.target.closest&&e.target.closest('#mus'))return;if(C.music&&a.paused)a.play().then(()=>mus(true)).catch(()=>{})};
@@ -190,10 +198,13 @@ const petal=(x,y,vx,vy,s)=>pt.push({x,y,vx,vy,s,rot:rnd(0,TAU),vr:rnd(-4,4),fp:r
 /* ---- state ---- */
 let fps=60,T=0,p=0,pe=0,eL=0,eR=0,dotsIn=0,tT=0,tF=0,tB=0,tb=0,msg=0,hv=1;
 /* kedua titik MUTER-MUTER (spiral) mengelilingi pusat, makin lama makin dekat, lalu bergabung */
-const SPIN=2.25;
-const dotPos=s=>{const q0=E.io(p),e=s<0?eL:eR,q=Math.min(1,q0+.07*e*(1-q0)),
- r=(W/2-mg)*Math.pow(1-q,1.1),an=(s<0?Math.PI:0)+q*TAU*SPIN;
- return[W/2+Math.cos(an)*r,cyD+Math.sin(an)*r*.55+Math.sin(T*1.7+(s<0?0:1.9))*7*(1-p)]};
+const SPIN=1.5,SPIN_AT=.58;
+const dotPos=s=>{const q0=E.io(p),e=s<0?eL:eR,q=Math.min(1,q0+.05*e*(1-q0)),
+ r=(W/2-mg)*(1-q),
+ sw=E.io(clamp((q-SPIN_AT)/(1-SPIN_AT))),
+ an=(s<0?Math.PI:0)+sw*TAU*SPIN,
+ flt=Math.sin(T*1.1+(s<0?0:1.9))*5*(1-sw)*(1-p);
+ return[W/2+Math.cos(an)*r,cyD+Math.sin(an)*r*.55+flt]};
 
 const meet=()=>{ph='trace';tT=T;p=1;pe=1;vib([18,30,50]);chargeOff();sfx.meet();sfx.sparkle();idle(prep);
  for(let i=0;i<34;i++){const an=rnd(0,TAU),v=rnd(80,260);spark({x:W/2,y:cyD,vx:Math.cos(an)*v,vy:Math.sin(an)*v,l:rnd(.5,1),s:rnd(5,10),d:2.2})}
@@ -210,7 +221,7 @@ const update=dt=>{T+=dt;
  if(ph==='idle'){
   if(T>1.9)dotsIn=Math.min(1,dotsIn+dt/1.1);
   const both=I.L&&I.R&&dotsIn>.35,was=p;
-  p=clamp(p+(both?dt/HOLD:-dt/.55));pe=E.io(p);night=E.io(clamp(p*2.4));
+  p=clamp(p+(both?dt/HOLD:-dt/1.4));pe=E.io(p);night=E.io(clamp(p*2.4));
   if((was<.34&&p>=.34)||(was<.67&&p>=.67)){vib(8);sfx.tick()}
   if(p>.03){chargeOn();chargeSet(p)}else if(ch&&p<=.004)chargeOff();
   if(was<.5&&p>=.5)idle(prep);
