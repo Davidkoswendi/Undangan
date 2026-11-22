@@ -1,10 +1,10 @@
 /* ===== ISI DATA UNDANGAN DI SINI ===== */
 const C={
   bride:'Ica', groom:'Syamsul',
-  date:'2026-12-01T14:00:00+07:00',
+  date:'2026-12-01T09:00:00+07:00',
   verse:'“Dan segala sesuatu Kami ciptakan berpasang-pasangan agar kamu mengingat (kebesaran Allah).” (QS. Adz-Dzariyat: 49)',
   story:'Assalamu’alaikum Warahmatullahi Wabarakatuh. Dengan memohon rahmat dan ridha Allah SWT, kami mengundang Anda untuk menyaksikan akad pernikahan kami.',
-  time:'14.00',
+  time:'09.00',
   /* Ayat pernikahan (bagian "Ayat Pernikahan"): t = isi ayat, s = sumber. Tambah/ubah sesuka hati */
   ayat:[
     {t:'Dan nikahkanlah orang-orang yang masih membujang di antara kamu, dan juga orang-orang yang layak (menikah) dari hamba-hamba sahayamu yang laki-laki dan perempuan. Jika mereka miskin, Allah akan memberi kemampuan kepada mereka dengan karunia-Nya. Dan Allah Maha Luas (pemberian-Nya), Maha Mengetahui.',s:'QS. An-Nur: 32'}
