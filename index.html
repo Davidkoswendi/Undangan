@@ -86,6 +86,25 @@
   </div>
 </section>
 
+<section id="absen">
+  <div class="hd rv"><i></i><b>♥</b><i></i></div>
+  <h2 class="script rv">Konfirmasi Kehadiran</h2>
+  <p class="rv">Mohon konfirmasi kehadiran Anda agar kami dapat mempersiapkan acara dengan sebaik-baiknya.</p>
+  <form id="fa" class="rv">
+    <label class="field">Nama<input id="an" required maxlength="40" autocomplete="name"></label>
+    <div class="field" role="radiogroup" aria-label="Kehadiran">Kehadiran
+      <div class="opts">
+        <label class="opt"><input type="radio" name="hd" value="hadir"><span>Hadir</span></label>
+        <label class="opt"><input type="radio" name="hd" value="tidak"><span>Tidak Hadir</span></label>
+      </div>
+    </div>
+    <label class="field">Program Studi<select id="ap" required><option value="" disabled selected>Pilih program studi</option></select></label>
+    <button class="btn" type="submit">Kirim Kehadiran ♥</button>
+  </form>
+  <div class="wcount sans" id="ac"></div>
+  <div class="psum" id="aps"></div><div class="aw" id="aw"></div>
+</section>
+
 <section id="galeri" class="band tear" data-t="tb"><div class="ph" data-k="gallery" data-par></div><h2 class="script rv">Momen Kami</h2></section>
 <section class="tripsec"><p class="sans kick rv">PERJALANAN KAMI</p><p class="rv">Satu per satu, inilah potongan kisah yang kami simpan.</p><div class="trip" id="grid"></div></section>
 
@@ -110,7 +129,7 @@
   <p class="sans" style="font-size:13px;opacity:.95;color:inherit" id="fDate"></p>
 </footer>
 <div id="bar"></div>
-<nav id="dock" aria-label="Navigasi"><a href="#hero" class="on">Beranda</a><a href="#acara">Acara</a><a href="#galeri">Galeri</a><a href="#rsvp">Pesan</a></nav>
+<nav id="dock" aria-label="Navigasi"><a href="#hero" class="on">Beranda</a><a href="#acara">Acara</a><a href="#absen">Hadir</a><a href="#galeri">Galeri</a><a href="#rsvp">Pesan</a></nav>
 <div id="lb"><div></div></div>
 
 <script src="script.js"></script>

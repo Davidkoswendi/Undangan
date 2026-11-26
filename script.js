@@ -1,10 +1,12 @@
 /* ===== ISI DATA UNDANGAN DI SINI ===== */
 const C={
   bride:'Ica', groom:'Syamsul',
-  date:'2026-12-01T09:00:00+07:00',
+  date:'2026-12-01T10:00:00+07:00',
   verse:'“Dan segala sesuatu Kami ciptakan berpasang-pasangan agar kamu mengingat (kebesaran Allah).” (QS. Adz-Dzariyat: 49)',
   story:'Assalamu’alaikum Warahmatullahi Wabarakatuh. Dengan memohon rahmat dan ridha Allah SWT, kami mengundang Anda untuk menyaksikan akad pernikahan kami.',
-  time:'09.00',
+  time:'10.00',
+  /* Pilihan program studi untuk absen kehadiran. Tambah/ubah sesuka hati */
+  prodi:['RPL','Tekkom','PMM','PGSD','PGPAUD'],
   /* Ayat pernikahan (bagian "Ayat Pernikahan"): t = isi ayat, s = sumber. Tambah/ubah sesuka hati */
   ayat:[
     {t:'Dan nikahkanlah orang-orang yang masih membujang di antara kamu, dan juga orang-orang yang layak (menikah) dari hamba-hamba sahayamu yang laki-laki dan perempuan. Jika mereka miskin, Allah akan memberi kemampuan kepada mereka dengan karunia-Nya. Dan Allah Maha Luas (pemberian-Nya), Maha Mengetahui.',s:'QS. An-Nur: 32'}
@@ -70,7 +72,7 @@ const fly=()=>rts.forEach(o=>{const b=o.r.getBoundingClientRect();let p=RM?1:Mat
  o.pl.style.opacity=p>.005&&p<.995?1:0});
 $('#heroCap').textContent=C.heroCap;
 /* guest name from #Nama-Tamu */
-try{const h=decodeURIComponent(location.hash.slice(1)).replace(/-/g,' ').trim();if(h)$('#guest').textContent=h;$('#fn').value=h}catch(e){}
+try{const h=decodeURIComponent(location.hash.slice(1)).replace(/-/g,' ').trim();if(h)$('#guest').textContent=h;$('#fn').value=h;$('#an').value=h}catch(e){}
 /* photos */
 const setBg=(e,s)=>{if(!s){e.classList.add('miss');return}const i=new Image();i.decoding='async';i.onerror=()=>e.classList.add('miss');
  /* foto ditaruh di layer sendiri lalu di-crossfade di atas placeholder (tanpa lompatan) */
@@ -373,21 +375,61 @@ let W=[];try{W=JSON.parse(localStorage.getItem('wishes')||'[]')}catch(e){}
 const esc=s=>s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const ago=t=>{if(!t)return'';const m=Math.floor((Date.now()-t)/6e4);return m<1?'baru saja':m<60?m+' menit lalu':m<1440?Math.floor(m/60)+' jam lalu':Math.floor(m/1440)+' hari lalu'};
 const draw=()=>{$('#wc').textContent=W.length?W.length+' pesan dari tamu undangan':'Jadilah yang pertama meninggalkan pesan.';$('#wishes').innerHTML=W.map((w,i)=>{const sk=typeof STK[w.s]==='string'?`<span class="stk big" style="--r:${i%2?7:-7}deg">${STK[w.s]}</span>`:'';return `<div class="wish${w.t===fresh?' new':''}" style="--d:${Math.min(i,8)*.07}s"><div class="av">${esc((w.n||'?')[0].toUpperCase())}</div><div class="bub">${sk}<b>${esc(w.n)}</b><small>${ago(w.t)}</small><p>${esc(w.m)}</p></div></div>`}).join('')};draw();
-let DB=null;
+let DB=null,DBR=null;
 (async()=>{const F=C.firebase;
  if(F&&F.apiKey&&F.projectId){try{
   const V='10.14.1',B='https://www.gstatic.com/firebasejs/'+V+'/';
   const[{initializeApp},{getFirestore,collection,addDoc,query,orderBy,limit,onSnapshot,serverTimestamp}]=await Promise.all([import(B+'firebase-app.js'),import(B+'firebase-firestore.js')]);
-  const col=collection(getFirestore(initializeApp(F)),F.collection||'pesan');
+  const fs=getFirestore(initializeApp(F)),col=collection(fs,F.collection||'pesan'),rc=collection(fs,F.rsvp||'kehadiran');
+  DBR={add:x=>addDoc(rc,{...x,ts:serverTimestamp()})};onSnapshot(rc,sn=>{RS=sn.docs.map(d=>d.data());drawA()},()=>{});
   DB={add:x=>addDoc(col,{...x,ts:serverTimestamp()})};
   onSnapshot(query(col,orderBy('t','desc'),limit(100)),sn=>{W=sn.docs.map(d=>{const v=d.data();return{n:v.n,m:v.m,t:v.t,s:v.s}});draw()},()=>{DB=null});
   return}catch(e){DB=null}}
- try{const c=await window.claude?.use('db');if(!c)return;DB=c.collection('messages');DB.orderBy('t','desc').limit(100).onSnapshot(s=>{W=s.docs.map(d=>d.data());draw()},()=>{DB=null})}catch(e){DB=null}})();
+ try{const c=await window.claude?.use('db');if(!c)return;try{DBR=c.collection('attendance');DBR.onSnapshot(s=>{RS=s.docs.map(d=>d.data());drawA()},()=>{DBR=null})}catch(e){DBR=null}DB=c.collection('messages');DB.orderBy('t','desc').limit(100).onSnapshot(s=>{W=s.docs.map(d=>d.data());draw()},()=>{DB=null})}catch(e){DB=null}})();
 $('#f').onsubmit=async e=>{e.preventDefault();const n=$('#fn').value.trim(),m=$('#fm').value.trim();if(!n||!m)return;const x={n,m,t:Date.now(),...(sel?{s:sel}:{})},b=$('#f .btn');b.disabled=true;fresh=x.t;sendFx(sel||'amplop',b.getBoundingClientRect());
  try{if(!DB)throw 0;await DB.add(x)}catch(_){W.unshift(x);try{localStorage.setItem('wishes',JSON.stringify(W.slice(0,50)))}catch(z){}draw()}
  b.disabled=false;$('#fm').value='';clrSel();$('#wishes').scrollTop=0;b.textContent='Terkirim ♥ Terima kasih!';const r=b.getBoundingClientRect();burst(r.left+r.width/2,r.top,18,1);setTimeout(()=>b.textContent='Kirim Pesan ♥',2600)};
+/* absen kehadiran */
+$('#ap').innerHTML+=C.prodi.map(p=>`<option value="${esc(p)}">${esc(p)}</option>`).join('');
+let RS=[];try{RS=JSON.parse(localStorage.getItem('rsvp')||'[]')}catch(e){}
+/* rasi bintang kehadiran: tiap tamu = satu bintang, 5 tamu membentuk satu rasi yang muncul, bersinar, lalu memudar */
+const TPL=[
+ {p:[[.08,.3],[.28,.72],[.5,.34],[.72,.76],[.92,.26]],e:[[0,1],[1,2],[2,3],[3,4]]},
+ {p:[[.5,.08],[.22,.46],[.78,.52],[.4,.92],[.84,.9]],e:[[0,1],[0,2],[1,2],[1,3],[2,4]]},
+ {p:[[.06,.22],[.27,.4],[.47,.52],[.67,.42],[.72,.78]],e:[[0,1],[1,2],[2,3],[3,4],[4,2]]},
+ {p:[[.12,.14],[.5,.38],[.88,.12],[.3,.82],[.74,.9]],e:[[0,1],[1,2],[1,3],[1,4],[3,4]]},
+ {p:[[.06,.2],[.26,.4],[.44,.18],[.62,.54],[.92,.74]],e:[[0,1],[1,2],[2,3],[3,4]]}
+];
+const RMO=matchMedia('(prefers-reduced-motion:reduce)').matches;
+let GR=[],gi=0,tmr=0,vis=false;
+(()=>{let b='';for(let i=0;i<48;i++)b+=`<circle cx="${(Math.random()*400).toFixed(0)}" cy="${(Math.random()*350).toFixed(0)}" r="${(.5+Math.random()*.9).toFixed(2)}" style="animation-delay:${(Math.random()*5).toFixed(1)}s;animation-duration:${(2+Math.random()*3).toFixed(1)}s"/>`;
+ $('#aw').innerHTML=`<svg viewBox="0 0 400 350" role="img" aria-label="Rasi bintang para tamu undangan"><defs><linearGradient id="sk" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#070d24"/><stop offset="1" stop-color="#1b2c68"/></linearGradient><radialGradient id="gg"><stop offset="0" stop-color="#ffe9a8" stop-opacity=".85"/><stop offset="1" stop-color="#ffe9a8" stop-opacity="0"/></radialGradient></defs><rect width="400" height="350" fill="url(#sk)"/><g class="bgs">${b}</g><path class="sh" d="M330 24L352 15"/><g id="cn"></g><text id="cap" x="200" y="339" text-anchor="middle"></text></svg>`})();
+const tr=(s,n)=>s.length>n?s.slice(0,n-1)+'…':s;
+const cons=(g,k)=>{const T=TPL[k%TPL.length],fl=k%2,n=g.length;
+ const P=g.map((_,i)=>{const a=T.p[i][0]+(Math.random()-.5)*.04,b=T.p[i][1]+(Math.random()-.5)*.04;return[48+(fl?1-a:a)*304,55+b*230]});
+ let h='<g class="cn">';
+ T.e.filter(([a,b])=>a<n&&b<n).forEach(([a,b])=>{h+=`<path class="cl" pathLength="1" d="M${P[a][0].toFixed(1)} ${P[a][1].toFixed(1)}L${P[b][0].toFixed(1)} ${P[b][1].toFixed(1)}" style="--d:${(Math.max(a,b)*.55+.25).toFixed(2)}s"/>`});
+ g.forEach((r,i)=>{const[x,y]=P[i],ok=r.h==='hadir',up=i%2===0,an=x<80?'start':x>320?'end':'middle',dx=an==='start'?-10:an==='end'?10:0;
+  h+=`<g transform="translate(${x.toFixed(1)} ${y.toFixed(1)})"><g class="st${ok?'':' no'}" style="--d:${(i*.55).toFixed(2)}s"><g class="tw"><circle class="gl" r="14"/><path class="sp" d="M0-9Q1.6-1.6 9 0Q1.6 1.6 0 9Q-1.6 1.6-9 0Q-1.6-1.6 0-9Z"/><circle class="co" r="2.3"/></g><text class="nm" x="${dx}" y="${up?-22:18}" text-anchor="${an}">${esc(tr(String(r.n||'?'),14))}</text><text class="pr" x="${dx}" y="${up?-11:29}" text-anchor="${an}">${esc(String(r.p||'').toUpperCase())}${ok?'':' · TITIP DOA'}</text></g></g>`});
+ return h+'</g>'};
+const show=()=>{if(!GR.length)return;const k=gi%GR.length;$('#cn').innerHTML=cons(GR[k],k);$('#cap').textContent=GR.length>1?'RASI KE-'+(k+1)+' DARI '+GR.length:'RASI KAMI';gi++};
+const loop=()=>{clearTimeout(tmr);tmr=setTimeout(()=>{if(vis&&!document.hidden)show();loop()},10200)};
+const drawA=()=>{const y=RS.filter(r=>r.h==='hadir').length,n=RS.length-y,sky=$('#aw');$('#ac').textContent=RS.length?y+' tamu hadir · '+n+' berhalangan':'Jadilah yang pertama mengonfirmasi kehadiran.';
+ const pc={};RS.forEach(r=>{if(r.h==='hadir')pc[r.p]=(pc[r.p]||0)+1});
+ $('#aps').innerHTML=Object.keys(pc).map(k=>`<span class="pchip">${esc(String(k))} <b>${pc[k]}</b></span>`).join('');
+ const L=RS.slice().sort((a,b)=>(b.t||0)-(a.t||0)),grew=L.length>GR.reduce((t,g)=>t+g.length,0)&&L.length!==(GR._n||0);
+ const G=[];for(let i=0;i<L.length;i+=5)G.push(L.slice(i,i+5));if(G.length>1){const z=G[G.length-1];for(let j=0;z.length<3;j++)z.push(L[j])}
+ const prev=GR._n||0;GR=G;GR._n=L.length;sky.hidden=!L.length;
+ if(RMO){sky.classList.add('rm');gi=0;show();return}
+ if(L.length>prev){gi=0;if(vis){show();loop()}}};drawA();
+if(!RMO){new IntersectionObserver(es=>{vis=es[0].isIntersecting;if(vis){show();loop()}else clearTimeout(tmr)}).observe($('#aw'))}
+$('#fa').onsubmit=async e=>{e.preventDefault();const n=$('#an').value.trim(),h=($('#fa input[name=hd]:checked')||{}).value,p=$('#ap').value,b=$('#fa .btn');
+ if(!n||!p)return;if(!h){b.textContent='Pilih hadir atau tidak dulu ya';setTimeout(()=>b.textContent='Kirim Kehadiran ♥',2200);return}
+ const x={n,h,p,t:Date.now()};b.disabled=true;
+ try{if(!DBR)throw 0;await DBR.add(x)}catch(_){RS.unshift(x);try{localStorage.setItem('rsvp',JSON.stringify(RS.slice(0,200)))}catch(z){}drawA()}
+ b.disabled=false;b.textContent=h==='hadir'?'Terima kasih, sampai jumpa! ♥':'Terima kasih atas konfirmasinya ♥';const r=b.getBoundingClientRect();burst(r.left+r.width/2,r.top,h==='hadir'?22:8,1);setTimeout(()=>b.textContent='Kirim Kehadiran ♥',3200)};
 /* menu bawah */
-const secs=['hero','acara','galeri','rsvp'].map(i=>document.getElementById(i)),ls=$$('#dock a');
+const secs=['hero','acara','absen','galeri','rsvp'].map(i=>document.getElementById(i)),ls=$$('#dock a');
 ls.forEach((a,i)=>a.onclick=e=>{e.preventDefault();secs[i].scrollIntoView({behavior:'smooth'})});
 addEventListener('scroll',()=>{const h=document.documentElement;$('#bar').style.width=(scrollY/(h.scrollHeight-innerHeight)*100)+'%';let k=0;secs.forEach((s,i)=>{if(s.getBoundingClientRect().top<innerHeight*.5)k=i});ls.forEach((a,i)=>a.classList.toggle('on',i===k))},{passive:true});
 /* musik */
